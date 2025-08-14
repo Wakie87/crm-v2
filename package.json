@@ -15,17 +15,11 @@
     "lint:strict": "eslint --max-warnings=0 src",
     "format": "prettier --write .",
     "format:check": "prettier -c -w .",
-    "prepare": "husky",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "create-admin": "tsx scripts/create-admin.ts"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,tsx,ts,css,less,scss,sass}": [
-      "prettier --write --no-error-on-unmatched-pattern"
-    ]
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -117,8 +111,6 @@
     "@types/sort-by": "^1.2.3",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^6.11.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.2.11",
     "prettier": "3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tsx": "^4.20.4",
