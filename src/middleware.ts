@@ -1,11 +1,38 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-const isProtectedRoute = createRouteMatcher(['/dashboard(.*)']);
+const protectedRoutes = ['/dashboard'];
+const authRoutes = ['/auth/sign-in', '/auth/sign-up'];
 
-export default clerkMiddleware(async (auth, req: NextRequest) => {
-  if (isProtectedRoute(req)) await auth.protect();
-});
+export default async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // Check if it's a protected route
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  // Check if it's an auth route
+  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+
+  // Simple session check using cookies
+  const sessionToken = req.cookies.get('better-auth.session_token')?.value;
+  const hasSession = !!sessionToken;
+
+  // If user is logged in and trying to access auth pages, redirect to dashboard
+  if (hasSession && isAuthRoute) {
+    return NextResponse.redirect(new URL('/dashboard', req.url));
+  }
+
+  // If user is not logged in and trying to access protected routes, redirect to sign-in
+  if (!hasSession && isProtectedRoute) {
+    const signInUrl = new URL('/auth/sign-in', req.url);
+    signInUrl.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  return NextResponse.next();
+}
+
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params
