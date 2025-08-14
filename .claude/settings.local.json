@@ -3,21 +3,13 @@
     "allow": [
       "Bash(pnpm add:*)",
       "Bash(pnpm db:generate:*)",
-      "Bash(pnpm build:*)"
+      "Bash(pnpm build:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(npm run dev:*)",
+      "WebFetch(domain:www.better-auth.com)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
-  },
-  "mcpServers": {
-    "github": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
-      }
-    }
   }
 }

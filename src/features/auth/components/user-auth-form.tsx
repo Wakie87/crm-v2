@@ -60,36 +60,51 @@ export function UserAuthForm({ mode }: UserAuthFormProps) {
 
   const onSubmit = async (data: SignInFormValue | SignUpFormValue) => {
     startTransition(async () => {
-      try {
-        if (isSignUp) {
-          const signUpData = data as SignUpFormValue;
-          const result = await signUp.email({
+      if (isSignUp) {
+        const signUpData = data as SignUpFormValue;
+        const { data: result, error } = await signUp.email(
+          {
             email: signUpData.email,
             password: signUpData.password,
             name: signUpData.name
-          });
-
-          if (result.data) {
-            toast.success('Account created successfully!');
-            router.push(callbackUrl || '/dashboard');
+          },
+          {
+            onError: (ctx) => {
+              toast.error(ctx.error.message || 'Failed to create account');
+            },
+            onSuccess: () => {
+              toast.success('Account created successfully!');
+              router.push(callbackUrl || '/dashboard');
+            }
           }
-        } else {
-          const signInData = data as SignInFormValue;
-          const result = await signIn.email({
+        );
+
+        // Fallback error handling if callbacks don't work
+        if (error) {
+          toast.error(error.message || 'Failed to create account');
+        }
+      } else {
+        const signInData = data as SignInFormValue;
+        const { data: result, error } = await signIn.email(
+          {
             email: signInData.email,
             password: signInData.password
-          });
-
-          if (result.data) {
-            toast.success('Signed in successfully!');
-            router.push(callbackUrl || '/dashboard');
+          },
+          {
+            onError: (ctx) => {
+              toast.error(ctx.error.message || 'Failed to sign in');
+            },
+            onSuccess: () => {
+              toast.success('Signed in successfully!');
+              router.push(callbackUrl || '/dashboard');
+            }
           }
-        }
-      } catch (error) {
-        toast.error(
-          isSignUp ? 'Failed to create account' : 'Failed to sign in'
         );
-        console.error('Auth error:', error);
+
+        // Fallback error handling if callbacks don't work
+        if (error) {
+          toast.error(error.message || 'Failed to sign in');
+        }
       }
     });
   };
