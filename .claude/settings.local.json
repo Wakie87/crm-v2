@@ -5,12 +5,16 @@
       "Bash(pnpm db:generate:*)",
       "Bash(pnpm build:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   },
   "mcpServers": {
     "github": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }

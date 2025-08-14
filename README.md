@@ -18,8 +18,7 @@ This is a starter template using the following stack:
 - Framework - [Next.js 15](https://nextjs.org/13)
 - Language - [TypeScript](https://www.typescriptlang.org)
 - Auth - [Clerk](https://go.clerk.com/ILdYhn7)
-- Error tracking - [<picture><img alt="Sentry" src="public/assets/sentry.svg">
-        </picture>](https://sentry.io/for/nextjs/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy26q2-nextjs&utm_content=github-banner-project-tryfree)
+- Error tracking - Removed (was Sentry)
 - Styling - [Tailwind CSS v4](https://tailwindcss.com)
 - Components - [Shadcn-ui](https://ui.shadcn.com)
 - Schema Validations - [Zod](https://zod.dev)
@@ -45,7 +44,7 @@ _If you are looking for a Tanstack start dashboard template, here is the [repo](
 | [Profile](https://shadcn-dashboard.kiranism.dev/dashboard/profile)         | Clerk's full-featured account management UI that allows users to manage their profile and security settings                                                                                                                                                             |
 | [Kanban Board](https://shadcn-dashboard.kiranism.dev/dashboard/kanban)     | A Drag n Drop task management board with dnd-kit and zustand to persist state locally.                                                                                                                                                                                  |
 | [Not Found](https://shadcn-dashboard.kiranism.dev/dashboard/notfound)      | Not Found Page Added in the root level                                                                                                                                                                                                                                  |
-| [Global Error](https://sentry.io/for/nextjs/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy26q2-nextjs&utm_content=github-banner-project-tryfree)           | A centralized error page that captures and displays errors across the application. Integrated with **Sentry** to log errors, provide detailed reports, and enable replay functionality for better debugging. |
+| Global Error           | A centralized error page that captures and displays errors across the application. Basic error logging to console (Sentry integration removed). |
 
 ## Feature based organization
 
