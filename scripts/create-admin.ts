@@ -1,12 +1,12 @@
-// Load environment variables
-require('dotenv').config();
+// Load environment variables silently
+require('dotenv').config({ debug: false });
 
 async function createSuperAdmin() {
   try {
     console.log('🔄 Creating super admin using Better Auth API...');
 
     // Use Better Auth's sign-up endpoint to create the admin user
-    const signUpUrl = `${process.env.BETTER_AUTH_URL || 'http://localhost:3001'}/api/auth/sign-up/email`;
+    const signUpUrl = `${process.env.BETTER_AUTH_URL || 'http://localhost:3000'}/api/auth/sign-up/email`;
 
     const response = await fetch(signUpUrl, {
       method: 'POST',
