@@ -30,6 +30,40 @@ export const navItems: NavItem[] = [
     items: [] // No child items
   },
   {
+    title: 'Users',
+    url: '/dashboard/users',
+    icon: 'users',
+    shortcut: ['u', 'u'],
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Organization',
+    url: '#',
+    icon: 'building',
+    isActive: false,
+    items: [
+      {
+        title: 'Settings',
+        url: '/dashboard/organization/settings',
+        icon: 'settings',
+        shortcut: ['o', 's']
+      },
+      {
+        title: 'Members',
+        url: '/dashboard/organization/members',
+        icon: 'users',
+        shortcut: ['o', 'm']
+      },
+      {
+        title: 'Roles',
+        url: '/dashboard/organization/roles',
+        icon: 'shield',
+        shortcut: ['o', 'r']
+      }
+    ]
+  },
+  {
     title: 'Account',
     url: '#', // Placeholder as there is no direct link for the parent
     icon: 'billing',

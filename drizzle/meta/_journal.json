@@ -8,6 +8,20 @@
       "when": 1755146179906,
       "tag": "0000_majestic_amazoness",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1755223032049,
+      "tag": "0001_greedy_pretty_boy",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1755230986839,
+      "tag": "0002_cynical_kid_colt",
+      "breakpoints": true
     }
   ]
 }

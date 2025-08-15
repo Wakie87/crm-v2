@@ -1,7 +1,8 @@
 'use client';
 
-import { Check, ChevronsUpDown, GalleryVerticalEnd } from 'lucide-react';
+import { Check, ChevronsUpDown, Building2 } from 'lucide-react';
 import * as React from 'react';
+import { useAuth } from '@/lib/auth-context';
 
 import {
   DropdownMenu,
@@ -15,34 +16,78 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar';
 
-interface Tenant {
+interface Organization {
   id: string;
   name: string;
+  slug: string;
+  logo?: string | null;
 }
 
-export function OrgSwitcher({
-  tenants,
-  defaultTenant,
-  onTenantSwitch
-}: {
-  tenants: Tenant[];
-  defaultTenant: Tenant;
-  onTenantSwitch?: (tenantId: string) => void;
-}) {
-  const [selectedTenant, setSelectedTenant] = React.useState<
-    Tenant | undefined
-  >(defaultTenant || (tenants.length > 0 ? tenants[0] : undefined));
+export function OrgSwitcher() {
+  const { currentOrganizationId, switchOrganization, isLoading } = useAuth();
+  const [organizations, setOrganizations] = React.useState<Organization[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const handleTenantSwitch = (tenant: Tenant) => {
-    setSelectedTenant(tenant);
-    if (onTenantSwitch) {
-      onTenantSwitch(tenant.id);
+  React.useEffect(() => {
+    async function fetchOrganizations() {
+      try {
+        const response = await fetch('/api/organizations/user-organizations');
+        if (response.ok) {
+          const data = await response.json();
+          setOrganizations(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch organizations:', error);
+      } finally {
+        setLoading(false);
+      }
     }
+
+    fetchOrganizations();
+  }, []);
+
+  const selectedOrganization = organizations.find(org => org.id === currentOrganizationId);
+
+  const handleOrganizationSwitch = async (organization: Organization) => {
+    await switchOrganization(organization.id);
   };
 
-  if (!selectedTenant) {
-    return null;
+  if (loading || isLoading) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size='lg' disabled>
+            <div className='bg-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
+              <Building2 className='size-4' />
+            </div>
+            <div className='flex flex-col gap-0.5 leading-none'>
+              <span className='font-semibold'>Loading...</span>
+              <span className='text-xs text-muted-foreground'>Organization</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
   }
+
+  if (organizations.length === 0) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size='lg' disabled>
+            <div className='bg-muted flex aspect-square size-8 items-center justify-center rounded-lg'>
+              <Building2 className='size-4' />
+            </div>
+            <div className='flex flex-col gap-0.5 leading-none'>
+              <span className='font-semibold'>No Organization</span>
+              <span className='text-xs text-muted-foreground'>Join an organization</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -53,11 +98,15 @@ export function OrgSwitcher({
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
               <div className='bg-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
-                <GalleryVerticalEnd className='size-4' />
+                <Building2 className='size-4' />
               </div>
               <div className='flex flex-col gap-0.5 leading-none'>
-                <span className='font-semibold'>Next Starter</span>
-                <span className=''>{selectedTenant.name}</span>
+                <span className='font-semibold'>
+                  {selectedOrganization?.name || 'Select Organization'}
+                </span>
+                <span className='text-xs text-muted-foreground'>
+                  {organizations.length} organization{organizations.length !== 1 ? 's' : ''}
+                </span>
               </div>
               <ChevronsUpDown className='ml-auto' />
             </SidebarMenuButton>
@@ -66,15 +115,23 @@ export function OrgSwitcher({
             className='w-[--radix-dropdown-menu-trigger-width]'
             align='start'
           >
-            {tenants.map((tenant) => (
+            {organizations.map((org) => (
               <DropdownMenuItem
-                key={tenant.id}
-                onSelect={() => handleTenantSwitch(tenant)}
+                key={org.id}
+                onSelect={() => handleOrganizationSwitch(org)}
               >
-                {tenant.name}{' '}
-                {tenant.id === selectedTenant.id && (
-                  <Check className='ml-auto' />
-                )}
+                <div className='flex items-center gap-2 w-full'>
+                  <div className='flex aspect-square size-6 items-center justify-center rounded-md bg-muted'>
+                    <Building2 className='size-3' />
+                  </div>
+                  <div className='flex-1'>
+                    <div className='font-medium'>{org.name}</div>
+                    <div className='text-xs text-muted-foreground'>@{org.slug}</div>
+                  </div>
+                  {org.id === currentOrganizationId && (
+                    <Check className='size-4' />
+                  )}
+                </div>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

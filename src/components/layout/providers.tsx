@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { ActiveThemeProvider } from '../active-theme';
+import { AuthProvider } from '@/lib/auth-context';
 
 export default function Providers({
   activeThemeValue,
@@ -12,7 +13,9 @@ export default function Providers({
   return (
     <>
       <ActiveThemeProvider initialTheme={activeThemeValue}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </ActiveThemeProvider>
     </>
   );

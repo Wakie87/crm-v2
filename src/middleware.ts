@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSessionCookie } from 'better-auth/cookies';
+import { auth } from './lib/auth';
 
 const protectedRoutes = ['/dashboard'];
 const authRoutes = ['/auth/sign-in', '/auth/sign-up'];
@@ -29,6 +30,29 @@ export default async function middleware(req: NextRequest) {
     const signInUrl = new URL('/auth/sign-in', req.url);
     signInUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(signInUrl);
+  }
+
+  // For protected routes with active session, check if superadmin needs special handling
+  if (hasSession && isProtectedRoute) {
+    try {
+      const session = await auth.api.getSession({
+        headers: req.headers,
+      });
+
+      if (session?.user) {
+        const response = NextResponse.next();
+        
+        // Add superadmin flag to headers for downstream components
+        if (session.user.role === 'superadmin') {
+          response.headers.set('x-user-is-superadmin', 'true');
+        }
+        
+        return response;
+      }
+    } catch (error) {
+      // If session validation fails, continue normally
+      console.error('Session validation error in middleware:', error);
+    }
   }
 
   return NextResponse.next();
