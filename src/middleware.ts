@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getSessionCookie } from 'better-auth/cookies';
 
 const protectedRoutes = ['/dashboard'];
 const authRoutes = ['/auth/sign-in', '/auth/sign-up'];
@@ -14,9 +15,9 @@ export default async function middleware(req: NextRequest) {
   // Check if it's an auth route
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
-  // Simple session check using cookies
-  const sessionToken = req.cookies.get('better-auth.session_token')?.value;
-  const hasSession = !!sessionToken;
+  // Check for session using Better Auth's helper
+  const sessionCookie = getSessionCookie(req);
+  const hasSession = !!sessionCookie;
 
   // If user is logged in and trying to access auth pages, redirect to dashboard
   if (hasSession && isAuthRoute) {
